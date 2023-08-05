@@ -5,7 +5,6 @@
 
 namespace Automattic\WooCommerce\Internal\DataStores\Orders;
 
-use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Caches\OrderCache;
 use Automattic\WooCommerce\Caches\OrderCacheController;
 use Automattic\WooCommerce\Internal\BatchProcessing\BatchProcessingController;
@@ -118,6 +117,7 @@ class CustomOrdersTableController {
 		self::add_filter( 'updated_option', array( $this, 'process_updated_option' ), 999, 3 );
 		self::add_filter( 'pre_update_option', array( $this, 'process_pre_update_option' ), 999, 3 );
 		self::add_action( 'woocommerce_after_register_post_type', array( $this, 'register_post_type_for_order_placeholders' ), 10, 0 );
+		self::add_filter( 'woocommerce_feature_definitions', array( $this, 'add_feature_definition' ) );
 	}
 
 	/**
@@ -414,26 +414,65 @@ class CustomOrdersTableController {
 	}
 
 	/**
+	 * Add the definition for the HPOS feature.
+	 *
+	 * @param array $feature_definitions The array of feature definitions to add to.
+	 *
+	 * @return array
+	 */
+	private function add_feature_definition( $feature_definitions ) {
+		$feature_definitions['custom_order_tables'] = array(
+			'name'                => __( 'High-Performance order storage', 'woocommerce' ),
+			'is_experimental'     => true,
+			'enabled_by_default'  => false,
+			'setting'             => $this->get_hpos_setting_for_feature(),
+			'additional_settings' => array(
+				$this->get_hpos_setting_for_sync(),
+			),
+		);
+
+		return $feature_definitions;
+	}
+
+	/**
 	 * Returns the HPOS setting for rendering HPOS vs Post setting block in Features section of the settings page.
 	 *
 	 * @return array Feature setting object.
 	 */
-	public function get_hpos_setting_for_feature() {
+	private function get_hpos_setting_for_feature() {
 		if ( 'yes' === get_transient( 'wc_installing' ) ) {
 			return array();
 		}
-		$sync_status             = $this->data_synchronizer->get_sync_status();
-		$hpos_enabled            = $this->custom_orders_table_usage_is_enabled();
-		$plugin_info             = $this->features_controller->get_compatible_plugins_for_feature( 'custom_order_tables', true );
-		$plugin_incompat_warning = $this->plugin_util->generate_incompatible_plugin_feature_warning( 'custom_order_tables', $plugin_info );
-		$sync_complete           = 0 === $sync_status['current_pending_count'];
-		$disabled_option         = array();
-		if ( count( array_merge( $plugin_info['uncertain'], $plugin_info['incompatible'] ) ) > 0 ) {
-			$disabled_option = array( 'yes' );
-		}
-		if ( ! $sync_complete ) {
-			$disabled_option = array( 'yes', 'no' );
-		}
+
+		$get_value = function() {
+			return $this->custom_orders_table_usage_is_enabled() ? 'yes' : 'no';
+		};
+
+		/**
+		 * ⚠️The FeaturesController instance must only be accessed from within the callback functions. Otherwise it
+		 * gets called while it's still being instantiated and creates and endless loop.
+		 */
+
+		$get_desc = function() {
+			$plugin_compatibility = $this->features_controller->get_compatible_plugins_for_feature( 'custom_order_tables', true );
+
+			return $this->plugin_util->generate_incompatible_plugin_feature_warning( 'custom_order_tables', $plugin_compatibility );
+		};
+
+		$get_disabled = function() {
+			$plugin_compatibility = $this->features_controller->get_compatible_plugins_for_feature( 'custom_order_tables', true );
+			$sync_status          = $this->data_synchronizer->get_sync_status();
+			$sync_complete        = 0 === $sync_status['current_pending_count'];
+			$disabled             = array();
+			if ( count( array_merge( $plugin_compatibility['uncertain'], $plugin_compatibility['incompatible'] ) ) > 0 ) {
+				$disabled = array( 'yes' );
+			}
+			if ( ! $sync_complete ) {
+				$disabled = array( 'yes', 'no' );
+			}
+
+			return $disabled;
+		};
 
 		return array(
 			'id'          => self::CUSTOM_ORDERS_TABLE_USAGE_ENABLED_OPTION,
@@ -443,9 +482,9 @@ class CustomOrdersTableController {
 				'no'  => __( 'WordPress post tables', 'woocommerce' ),
 				'yes' => __( 'High performance order storage (new)', 'woocommerce' ),
 			),
-			'value'       => $hpos_enabled ? 'yes' : 'no',
-			'disabled'    => $disabled_option,
-			'desc'        => $plugin_incompat_warning,
+			'value'       => $get_value,
+			'disabled'    => $get_disabled,
+			'desc'        => $get_desc,
 			'desc_at_end' => true,
 		);
 	}
@@ -455,40 +494,48 @@ class CustomOrdersTableController {
 	 *
 	 * @return array Feature setting object.
 	 */
-	public function get_hpos_setting_for_sync() {
+	private function get_hpos_setting_for_sync() {
 		if ( 'yes' === get_transient( 'wc_installing' ) ) {
 			return array();
 		}
-		$sync_status      = $this->data_synchronizer->get_sync_status();
-		$sync_in_progress = $this->batch_processing_controller->is_enqueued( get_class( $this->data_synchronizer ) );
-		$sync_enabled     = get_option( DataSynchronizer::ORDERS_DATA_SYNC_ENABLED_OPTION );
-		$sync_message     = '';
-		if ( $sync_in_progress && $sync_status['current_pending_count'] > 0 ) {
-			$sync_message = sprintf(
-				// translators: %d: number of pending orders.
-				__( 'Currently syncing orders... %d pending', 'woocommerce' ),
-				$sync_status['current_pending_count']
-			);
-		} elseif ( $sync_status['current_pending_count'] > 0 ) {
-			$sync_message = sprintf(
-				// translators: %d: number of pending orders.
-				_n(
-					'Sync %d pending order. You can switch data storage for orders only when posts and orders table are in sync.',
-					'Sync %d pending orders. You can switch data storage for orders only when posts and orders table are in sync.',
+
+		$get_value = function() {
+			return get_option( DataSynchronizer::ORDERS_DATA_SYNC_ENABLED_OPTION );
+		};
+
+		$get_sync_message = function() {
+			$sync_status      = $this->data_synchronizer->get_sync_status();
+			$sync_in_progress = $this->batch_processing_controller->is_enqueued( get_class( $this->data_synchronizer ) );
+			$sync_message     = '';
+			if ( $sync_in_progress && $sync_status['current_pending_count'] > 0 ) {
+				$sync_message = sprintf(
+					// translators: %d: number of pending orders.
+					__( 'Currently syncing orders... %d pending', 'woocommerce' ),
+					$sync_status['current_pending_count']
+				);
+			} elseif ( $sync_status['current_pending_count'] > 0 ) {
+				$sync_message = sprintf(
+					// translators: %d: number of pending orders.
+					_n(
+						'Sync %d pending order. You can switch data storage for orders only when posts and orders table are in sync.',
+						'Sync %d pending orders. You can switch data storage for orders only when posts and orders table are in sync.',
+						$sync_status['current_pending_count'],
+						'woocommerce'
+					),
 					$sync_status['current_pending_count'],
-					'woocommerce'
-				),
-				$sync_status['current_pending_count'],
-			);
-		}
+				);
+			}
+
+			return $sync_message;
+		};
 
 		return array(
 			'id'       => DataSynchronizer::ORDERS_DATA_SYNC_ENABLED_OPTION,
 			'title'    => '',
 			'type'     => 'checkbox',
 			'desc'     => __( 'Keep the posts and orders tables in sync (compatibility mode).', 'woocommerce' ),
-			'value'    => $sync_enabled,
-			'desc_tip' => $sync_message,
+			'value'    => $get_value,
+			'desc_tip' => $get_sync_message,
 		);
 	}
 }
