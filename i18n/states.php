@@ -1293,6 +1293,8 @@ return array(
 		'KP' => __( 'Khyber Pakhtunkhwa', 'woocommerce' ),
 		'PB' => __( 'Punjab', 'woocommerce' ),
 		'SD' => __( 'Sindh', 'woocommerce' ),
+		'KI' => __( 'Karachi', 'woocommerce' ),
+		
 	),
 	'PL' => array(),
 	'PR' => array(),
