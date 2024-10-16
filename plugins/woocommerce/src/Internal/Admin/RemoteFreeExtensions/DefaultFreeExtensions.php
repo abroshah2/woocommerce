@@ -37,7 +37,6 @@ class DefaultFreeExtensions {
 				'title'   => __( 'Grow your store', 'woocommerce' ),
 				'plugins' => array(
 					self::get_plugin( 'mailpoet' ),
-					self::get_plugin( 'codistoconnect' ),
 					self::get_plugin( 'google-listings-and-ads' ),
 					self::get_plugin( 'pinterest-for-woocommerce' ),
 					self::get_plugin( 'facebook-for-woocommerce' ),
@@ -50,7 +49,6 @@ class DefaultFreeExtensions {
 					self::get_plugin( 'mailpoet:alt' ),
 					self::get_plugin( 'mailchimp-for-woocommerce' ),
 					self::get_plugin( 'klaviyo' ),
-					self::get_plugin( 'creative-mail-by-constant-contact' ),
 				),
 			),
 			array(
@@ -61,7 +59,6 @@ class DefaultFreeExtensions {
 					self::get_plugin( 'tiktok-for-business' ),
 					self::get_plugin( 'pinterest-for-woocommerce:alt' ),
 					self::get_plugin( 'facebook-for-woocommerce:alt' ),
-					self::get_plugin( 'codistoconnect:alt' ),
 				),
 			),
 			array(
@@ -76,6 +73,7 @@ class DefaultFreeExtensions {
 						self::get_plugin( 'mailpoet' ),
 						self::get_plugin( 'google-listings-and-ads' ),
 						self::get_plugin( 'woocommerce-services:tax' ),
+						self::get_plugin( 'tiktok-for-business' ),
 					)
 				),
 			),
@@ -93,12 +91,12 @@ class DefaultFreeExtensions {
 	 */
 	public static function get_plugin( $slug ) {
 		$plugins = array(
-			'google-listings-and-ads'           => array(
+			'google-listings-and-ads'       => array(
 				'min_php_version' => '7.4',
-				'name'            => __( 'Google Listings & Ads', 'woocommerce' ),
+				'name'            => __( 'Google for WooCommerce', 'woocommerce' ),
 				'description'     => sprintf(
 					/* translators: 1: opening product link tag. 2: closing link tag */
-					__( 'Drive sales with %1$sGoogle Listings and Ads%2$s', 'woocommerce' ),
+					__( 'Drive sales with %1$sGoogle for WooCommerce%2$s', 'woocommerce' ),
 					'<a href="https://woocommerce.com/products/google-listings-and-ads" target="_blank">',
 					'</a>'
 				),
@@ -117,14 +115,14 @@ class DefaultFreeExtensions {
 					),
 				),
 			),
-			'google-listings-and-ads:alt'       => array(
-				'name'           => __( 'Google Listings & Ads', 'woocommerce' ),
+			'google-listings-and-ads:alt'   => array(
+				'name'           => __( 'Google for WooCommerce', 'woocommerce' ),
 				'description'    => __( 'Reach more shoppers and drive sales for your store. Integrate with Google to list your products for free and launch paid ad campaigns.', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/google.svg', WC_PLUGIN_FILE ),
 				'manage_url'     => 'admin.php?page=wc-admin&path=%2Fgoogle%2Fstart',
 				'is_built_by_wc' => true,
 			),
-			'facebook-for-woocommerce'          => array(
+			'facebook-for-woocommerce'      => array(
 				'name'           => __( 'Facebook for WooCommerce', 'woocommerce' ),
 				'description'    => __( 'List products and create ads on Facebook and Instagram with <a href="https://woocommerce.com/products/facebook/">Facebook for WooCommerce</a>', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/facebook.png', WC_PLUGIN_FILE ),
@@ -132,7 +130,7 @@ class DefaultFreeExtensions {
 				'is_visible'     => false,
 				'is_built_by_wc' => false,
 			),
-			'facebook-for-woocommerce:alt'      => array(
+			'facebook-for-woocommerce:alt'  => array(
 				'name'           => __( 'Facebook for WooCommerce', 'woocommerce' ),
 				'description'    => __( 'List products and create ads on Facebook and Instagram.', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/facebook.png', WC_PLUGIN_FILE ),
@@ -140,7 +138,7 @@ class DefaultFreeExtensions {
 				'is_visible'     => false,
 				'is_built_by_wc' => false,
 			),
-			'pinterest-for-woocommerce'         => array(
+			'pinterest-for-woocommerce'     => array(
 				'name'            => __( 'Pinterest for WooCommerce', 'woocommerce' ),
 				'description'     => __( 'Get your products in front of Pinners searching for ideas and things to buy.', 'woocommerce' ),
 				'image_url'       => plugins_url( '/assets/images/onboarding/pinterest.png', WC_PLUGIN_FILE ),
@@ -148,61 +146,35 @@ class DefaultFreeExtensions {
 				'is_built_by_wc'  => true,
 				'min_php_version' => '7.3',
 			),
-			'pinterest-for-woocommerce:alt'     => array(
+			'pinterest-for-woocommerce:alt' => array(
 				'name'           => __( 'Pinterest for WooCommerce', 'woocommerce' ),
 				'description'    => __( 'Get your products in front of Pinterest users searching for ideas and things to buy. Get started with Pinterest and make your entire product catalog browsable.', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/pinterest.png', WC_PLUGIN_FILE ),
 				'manage_url'     => 'admin.php?page=wc-admin&path=%2Fpinterest%2Flanding',
 				'is_built_by_wc' => true,
 			),
-			'mailpoet'                          => array(
+			'mailpoet'                      => array(
 				'name'           => __( 'MailPoet', 'woocommerce' ),
 				'description'    => __( 'Create and send purchase follow-up emails, newsletters, and promotional campaigns straight from your dashboard.', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/mailpoet.png', WC_PLUGIN_FILE ),
 				'manage_url'     => 'admin.php?page=mailpoet-newsletters',
 				'is_built_by_wc' => true,
 			),
-			'mailchimp-for-woocommerce'         => array(
+			'mailchimp-for-woocommerce'     => array(
 				'name'           => __( 'Mailchimp', 'woocommerce' ),
 				'description'    => __( 'Send targeted campaigns, recover abandoned carts and much more with Mailchimp.', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/mailchimp-for-woocommerce.png', WC_PLUGIN_FILE ),
 				'manage_url'     => 'admin.php?page=mailchimp-woocommerce',
 				'is_built_by_wc' => false,
 			),
-			'klaviyo'                           => array(
+			'klaviyo'                       => array(
 				'name'           => __( 'Klaviyo', 'woocommerce' ),
 				'description'    => __( 'Grow and retain customers with intelligent, impactful email and SMS marketing automation and a consolidated view of customer interactions.', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/klaviyo.png', WC_PLUGIN_FILE ),
 				'manage_url'     => 'admin.php?page=klaviyo_settings',
 				'is_built_by_wc' => false,
 			),
-			'creative-mail-by-constant-contact' => array(
-				'name'           => __( 'Creative Mail for WooCommerce', 'woocommerce' ),
-				'description'    => __( 'Create on-brand store campaigns, fast email promotions and customer retargeting with Creative Mail.', 'woocommerce' ),
-				'image_url'      => plugins_url( '/assets/images/onboarding/creative-mail-by-constant-contact.png', WC_PLUGIN_FILE ),
-				'manage_url'     => 'admin.php?page=creativemail',
-				'is_built_by_wc' => false,
-			),
-			'codistoconnect'                    => array(
-				'name'           => __( 'Codisto for WooCommerce', 'woocommerce' ),
-				'description'    => sprintf(
-					/* translators: 1: opening product link tag. 2: closing link tag */
-					__( 'Sell on Amazon, eBay, Walmart and more directly from WooCommerce with  %1$sCodisto%2$s', 'woocommerce' ),
-					'<a href="https://woocommerce.com/pt-br/products/amazon-ebay-integration/?quid=c247a85321c9e93e7c3c6f1eb072e6e5" target="_blank">',
-					'</a>'
-				),
-				'image_url'      => plugins_url( '/assets/images/onboarding/codistoconnect.png', WC_PLUGIN_FILE ),
-				'manage_url'     => 'admin.php?page=codisto-settings',
-				'is_built_by_wc' => true,
-			),
-			'codistoconnect:alt'                => array(
-				'name'           => __( 'Codisto for WooCommerce', 'woocommerce' ),
-				'description'    => __( 'Sell on Amazon, eBay, Walmart and more directly from WooCommerce.', 'woocommerce' ),
-				'image_url'      => plugins_url( '/assets/images/onboarding/codistoconnect.png', WC_PLUGIN_FILE ),
-				'manage_url'     => 'admin.php?page=codisto-settings',
-				'is_built_by_wc' => true,
-			),
-			'woocommerce-payments'              => array(
+			'woocommerce-payments'          => array(
 				'name'           => __( 'WooPayments', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/wcpay.svg', WC_PLUGIN_FILE ),
 				'description'    => sprintf(
@@ -213,211 +185,56 @@ class DefaultFreeExtensions {
 				),
 				'is_visible'     => array(
 					array(
-						'type'     => 'or',
-						'operands' => array(
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'US',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'PR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'AU',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'CA',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'DE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'ES',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'FR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'GB',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'IE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'IT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'NZ',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'AT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'BE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'NL',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'PL',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'PT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'CH',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'HK',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'SG',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'CY',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'DK',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'EE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'FI',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'GR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'LU',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'LT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'LV',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'NO',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'MT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'SI',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'SK',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'BG',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'CZ',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'HR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'HU',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'RO',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'SE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'JP',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'AE',
-								'operation' => '=',
-							),
+						'type'      => 'base_location_country',
+						'value'     => array(
+							'US',
+							'PR',
+							'AU',
+							'CA',
+							'DE',
+							'ES',
+							'FR',
+							'GB',
+							'IE',
+							'IT',
+							'NZ',
+							'AT',
+							'BE',
+							'NL',
+							'PL',
+							'PT',
+							'CH',
+							'HK',
+							'SG',
+							'CY',
+							'DK',
+							'EE',
+							'FI',
+							'GR',
+							'LU',
+							'LT',
+							'LV',
+							'NO',
+							'MT',
+							'SI',
+							'SK',
+							'BG',
+							'CZ',
+							'HR',
+							'HU',
+							'RO',
+							'SE',
+							'JP',
+							'AE',
 						),
+						'operation' => 'in',
 					),
 					DefaultPaymentGateways::get_rules_for_cbd( false ),
 				),
 				'is_built_by_wc' => true,
 				'min_wp_version' => '5.9',
 			),
-			'woocommerce-services:shipping'     => array(
+			'woocommerce-services:shipping' => array(
 				'name'           => __( 'WooCommerce Shipping', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/woo.svg', WC_PLUGIN_FILE ),
 				'description'    => sprintf(
@@ -438,6 +255,24 @@ class DefaultFreeExtensions {
 							array(
 								'type'    => 'plugins_activated',
 								'plugins' => array( 'woocommerce-services' ),
+							),
+						),
+					),
+					array(
+						'type'    => 'not',
+						'operand' => array(
+							array(
+								'type'    => 'plugins_activated',
+								'plugins' => array( 'woocommerce-shipping' ),
+							),
+						),
+					),
+					array(
+						'type'    => 'not',
+						'operand' => array(
+							array(
+								'type'    => 'plugins_activated',
+								'plugins' => array( 'woocommerce-tax' ),
 							),
 						),
 					),
@@ -486,7 +321,7 @@ class DefaultFreeExtensions {
 				),
 				'is_built_by_wc' => true,
 			),
-			'woocommerce-services:tax'          => array(
+			'woocommerce-services:tax'      => array(
 				'name'           => __( 'WooCommerce Tax', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/woo.svg', WC_PLUGIN_FILE ),
 				'description'    => sprintf(
@@ -496,66 +331,7 @@ class DefaultFreeExtensions {
 					'</a>'
 				),
 				'is_visible'     => array(
-					array(
-						'type'     => 'or',
-						'operands' => array(
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'US',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'FR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'GB',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'DE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'CA',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'AU',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'GR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'BE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'PT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'DK',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'SE',
-								'operation' => '=',
-							),
-						),
-					),
+					self::get_rules_for_wcservices_tax_countries(),
 					array(
 						'type'    => 'not',
 						'operand' => array(
@@ -565,10 +341,28 @@ class DefaultFreeExtensions {
 							),
 						),
 					),
+					array(
+						'type'    => 'not',
+						'operand' => array(
+							array(
+								'type'    => 'plugins_activated',
+								'plugins' => array( 'woocommerce-shipping' ),
+							),
+						),
+					),
+					array(
+						'type'    => 'not',
+						'operand' => array(
+							array(
+								'type'    => 'plugins_activated',
+								'plugins' => array( 'woocommerce-tax' ),
+							),
+						),
+					),
 				),
 				'is_built_by_wc' => true,
 			),
-			'jetpack'                           => array(
+			'jetpack'                       => array(
 				'name'           => __( 'Jetpack', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/jetpack.svg', WC_PLUGIN_FILE ),
 				'description'    => sprintf(
@@ -591,7 +385,7 @@ class DefaultFreeExtensions {
 				'is_built_by_wc' => false,
 				'min_wp_version' => '6.0',
 			),
-			'mailpoet'                          => array(
+			'mailpoet'                      => array(
 				'name'           => __( 'MailPoet', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/mailpoet.png', WC_PLUGIN_FILE ),
 				'description'    => sprintf(
@@ -614,14 +408,14 @@ class DefaultFreeExtensions {
 				),
 				'is_built_by_wc' => true,
 			),
-			'mailpoet:alt'                      => array(
+			'mailpoet:alt'                  => array(
 				'name'           => __( 'MailPoet', 'woocommerce' ),
 				'description'    => __( 'Create and send purchase follow-up emails, newsletters, and promotional campaigns straight from your dashboard.', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/mailpoet.png', WC_PLUGIN_FILE ),
 				'manage_url'     => 'admin.php?page=mailpoet-newsletters',
 				'is_built_by_wc' => true,
 			),
-			'tiktok-for-business'               => array(
+			'tiktok-for-business'           => array(
 				'name'           => __( 'TikTok for WooCommerce', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/tiktok.svg', WC_PLUGIN_FILE ),
 				'description'    =>
@@ -629,214 +423,55 @@ class DefaultFreeExtensions {
 				'manage_url'     => 'admin.php?page=tiktok',
 				'is_visible'     => array(
 					array(
-						'type'     => 'or',
-						'operands' => array(
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'US',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'CA',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'MX',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'AT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'BE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'CZ',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'DK',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'FI',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'FR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'DE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'GR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'HU',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'IE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'IT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'NL',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'PL',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'PT',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'RO',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'ES',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'SE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'GB',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'CH',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'NO',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'AU',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'NZ',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'SG',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'MY',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'PH',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'ID',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'VN',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'TH',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'KR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'IL',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'AE',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'RU',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'UA',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'TR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'SA',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'BR',
-								'operation' => '=',
-							),
-							array(
-								'type'      => 'base_location_country',
-								'value'     => 'JP',
-								'operation' => '=',
-							),
+						'type'      => 'base_location_country',
+						'value'     => array(
+							'US',
+							'CA',
+							'MX',
+							'AT',
+							'BE',
+							'CZ',
+							'DK',
+							'FI',
+							'FR',
+							'DE',
+							'GR',
+							'HU',
+							'IE',
+							'IT',
+							'NL',
+							'PL',
+							'PT',
+							'RO',
+							'ES',
+							'SE',
+							'GB',
+							'CH',
+							'NO',
+							'AU',
+							'NZ',
+							'SG',
+							'MY',
+							'PH',
+							'ID',
+							'VN',
+							'TH',
+							'KR',
+							'IL',
+							'AE',
+							'RU',
+							'UA',
+							'TR',
+							'SA',
+							'BR',
+							'JP',
 						),
+						'operation' => 'in',
 					),
 				),
 				'is_built_by_wc' => false,
 			),
-			'tiktok-for-business:alt'           => array(
+			'tiktok-for-business:alt'       => array(
 				'name'           => __( 'TikTok for WooCommerce', 'woocommerce' ),
 				'image_url'      => plugins_url( '/assets/images/onboarding/tiktok.svg', WC_PLUGIN_FILE ),
 				'description'    => sprintf(
@@ -874,80 +509,124 @@ class DefaultFreeExtensions {
 				'label'            => __( 'Get paid with WooPayments', 'woocommerce' ),
 				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-woo.svg', WC_PLUGIN_FILE ),
 				'description'      => __( "Securely accept payments and manage payment activity straight from your store's dashboard", 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/products/woocommerce-payments',
+				'learn_more_link'  => 'https://woocommerce.com/products/woocommerce-payments?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 5,
 			),
 			'woocommerce-services:shipping' => array(
 				'label'            => __( 'Print shipping labels with WooCommerce Shipping', 'woocommerce' ),
 				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-woo.svg', WC_PLUGIN_FILE ),
 				'description'      => __( 'Print USPS and DHL labels directly from your dashboard and save on shipping.', 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/woocommerce-shipping',
+				'learn_more_link'  => 'https://woocommerce.com/woocommerce-shipping?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 3,
 			),
 			'jetpack'                       => array(
 				'label'            => __( 'Boost content creation with Jetpack AI Assistant', 'woocommerce' ),
 				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-jetpack.svg', WC_PLUGIN_FILE ),
 				'description'      => __( 'Save time on content creation — unlock high-quality blog posts and pages using AI.', 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/products/jetpack',
+				'learn_more_link'  => 'https://woocommerce.com/products/jetpack?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 8,
 			),
 			'pinterest-for-woocommerce'     => array(
 				'label'            => __( 'Showcase your products with Pinterest', 'woocommerce' ),
 				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-pinterest.svg', WC_PLUGIN_FILE ),
 				'description'      => __( 'Get your products in front of a highly engaged audience.', 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/products/pinterest-for-woocommerce',
+				'learn_more_link'  => 'https://woocommerce.com/products/pinterest-for-woocommerce?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 2,
 			),
 			'mailpoet'                      => array(
 				'label'            => __( 'Reach your customers with MailPoet', 'woocommerce' ),
 				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-mailpoet.svg', WC_PLUGIN_FILE ),
 				'description'      => __( 'Send purchase follow-up emails, newsletters, and promotional campaigns.', 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/products/mailpoet',
+				'learn_more_link'  => 'https://woocommerce.com/products/mailpoet?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 7,
 			),
 			'tiktok-for-business'           => array(
 				'label'            => __( 'Create ad campaigns with TikTok', 'woocommerce' ),
-				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-tiktok.svg', WC_PLUGIN_FILE ),
+				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-tiktok.png', WC_PLUGIN_FILE ),
 				'description'      => __( 'Create advertising campaigns and reach one billion global users.', 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/products/tiktok-for-woocommerce',
+				'learn_more_link'  => 'https://woocommerce.com/products/tiktok-for-woocommerce?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 1,
 			),
 			'google-listings-and-ads'       => array(
-				'label'            => __( 'Drive sales with Google Listings & Ads', 'woocommerce' ),
+				'label'            => __( 'Drive sales with Google for WooCommerce', 'woocommerce' ),
 				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-google.svg', WC_PLUGIN_FILE ),
 				'description'      => __( 'Reach millions of active shoppers across Google with free product listings and ads.', 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/products/google-listings-and-ads',
+				'learn_more_link'  => 'https://woocommerce.com/products/google-listings-and-ads?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 6,
 			),
 			'woocommerce-services:tax'      => array(
 				'label'            => __( 'Get automated tax rates with WooCommerce Tax', 'woocommerce' ),
 				'image_url'        => plugins_url( '/assets/images/core-profiler/logo-woo.svg', WC_PLUGIN_FILE ),
 				'description'      => __( 'Automatically calculate how much sales tax should be collected – by city, country, or state.', 'woocommerce' ),
-				'learn_more_link'  => 'https://woocommerce.com/products/tax',
+				'learn_more_link'  => 'https://woocommerce.com/products/tax?utm_source=storeprofiler&utm_medium=product&utm_campaign=freefeatures',
 				'install_priority' => 4,
 			),
 		);
 
-		// Copy shipping for the core-profiler and remove is_visible conditions, except for the country restriction.
-		$_plugins['woocommerce-services:shipping']['is_visible'] = [
+		/*
+		 * Overwrite the is_visible conditions to just the country restriction
+		 * and the requirement for WooCommerce Shipping and WooCommerce Tax
+		 * to not be active.
+		 */
+		$_plugins['woocommerce-services:shipping']['is_visible'] = array(
 			array(
 				'type'      => 'base_location_country',
 				'value'     => 'US',
 				'operation' => '=',
 			),
-		];
+			array(
+				'type'    => 'not',
+				'operand' => array(
+					array(
+						'type'    => 'plugins_activated',
+						'plugins' => array( 'woocommerce-shipping' ),
+					),
+				),
+			),
+			array(
+				'type'    => 'not',
+				'operand' => array(
+					array(
+						'type'    => 'plugins_activated',
+						'plugins' => array( 'woocommerce-tax' ),
+					),
+				),
+			),
+		);
 
-		$remove_plugins_activated_rule = function( $is_visible ) {
+		$_plugins['woocommerce-services:tax']['is_visible'] = array(
+			self::get_rules_for_wcservices_tax_countries(),
+			array(
+				'type'    => 'not',
+				'operand' => array(
+					array(
+						'type'    => 'plugins_activated',
+						'plugins' => array( 'woocommerce-shipping' ),
+					),
+				),
+			),
+			array(
+				'type'    => 'not',
+				'operand' => array(
+					array(
+						'type'    => 'plugins_activated',
+						'plugins' => array( 'woocommerce-tax' ),
+					),
+				),
+			),
+		);
+
+		$remove_plugins_activated_rule = function ( $is_visible ) {
 			$is_visible = array_filter(
 				array_map(
-					function( $rule ) {
+					function ( $rule ) {
 						if ( is_object( $rule ) || ! isset( $rule['operand'] ) ) {
 							return $rule;
 						}
 
 						return array_filter(
 							$rule['operand'],
-							function( $operand ) {
+							function ( $operand ) {
 								return 'plugins_activated' !== $operand['type'];
 							}
 						);
@@ -962,12 +641,63 @@ class DefaultFreeExtensions {
 		foreach ( $plugins as &$plugin ) {
 			if ( isset( $_plugins[ $plugin['key'] ] ) ) {
 				$plugin = array_merge( $plugin, $_plugins[ $plugin['key'] ] );
-				if ( isset( $plugin['is_visible'] ) && is_array( $plugin['is_visible'] ) ) {
+
+				/*
+				 * Removes the "not plugins_activated" rules from the "is_visible"
+				 * ruleset except for the WooCommerce Services plugin.
+				 *
+				 * WC Services is a plugin that provides shipping and tax features.
+				 * WC Services is sometimes labelled as "WooCommerce Shipping" or
+				 * "WooCommerce Tax", depending on which functionality of the plugin
+				 * is advertised.
+				 *
+				 * We have two new upcoming, standalone plugins: "WooCommerce Shipping" and
+				 * "WooCommerce Tax" (same names as sometimes used for WC Services).
+				 * The new plugins are incompatible with the old WC Services plugin.
+				 * In order to prevent merchants from running into this plugin conflict,
+				 * we want to keep the "not plugins_activated" rules for recommending
+				 * WC Services.
+				 *
+				 * If WC Services and the new plugins are installed together,
+				 * a notice is displayed and the plugin functionality is not registered
+				 * by either WC Services or WC Shipping and WC Tax.
+				 */
+				if (
+					isset( $plugin['is_visible'] ) &&
+					is_array( $plugin['is_visible'] ) &&
+					! in_array( $plugin['key'], array( 'woocommerce-services:shipping', 'woocommerce-services:tax' ), true )
+				) {
 					$plugin['is_visible'] = $remove_plugins_activated_rule( $plugin['is_visible'] );
 				}
 			}
 		}
 
 		return $plugins;
+	}
+
+	/**
+	 * Returns the country restrictions for use in the `is_visible` key for
+	 * recommending the tax functionality of WooCommerce Shipping & Tax.
+	 *
+	 * @return array
+	 */
+	private static function get_rules_for_wcservices_tax_countries() {
+		return array(
+			'type'      => 'base_location_country',
+			'operation' => 'in',
+			'value'     => array(
+				'US',
+				'FR',
+				'GB',
+				'DE',
+				'CA',
+				'AU',
+				'GR',
+				'BE',
+				'PT',
+				'DK',
+				'SE',
+			),
+		);
 	}
 }

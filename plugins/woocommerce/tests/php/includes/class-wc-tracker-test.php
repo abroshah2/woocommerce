@@ -220,4 +220,27 @@ class WC_Tracker_Test extends \WC_Unit_Test_Case {
 
 		$this->assertIsArray( $tracking_data['enabled_features'] );
 	}
+
+	/**
+	 * @testDox Test store_id is included in tracking data.
+	 */
+	public function test_get_tracking_data_store_id() {
+		update_option( \WC_Install::STORE_ID_OPTION, '12345' );
+		$tracking_data = WC_Tracker::get_tracking_data();
+		$this->assertArrayHasKey( 'store_id', $tracking_data );
+		$this->assertEquals( '12345', $tracking_data['store_id'] );
+		delete_option( \WC_Install::STORE_ID_OPTION );
+	}
+
+	/**
+	 * @testDox Test woocommerce_install_admin_timestamp is included in tracking data.
+	 */
+	public function test_get_tracking_data_admin_install_timestamp() {
+		$time = time();
+		update_option( 'woocommerce_admin_install_timestamp', $time );
+		$tracking_data = WC_Tracker::get_tracking_data();
+		$this->assertArrayHasKey( 'admin_install_timestamp', $tracking_data['settings'] );
+		$this->assertEquals( $tracking_data['settings']['admin_install_timestamp'], $time );
+		delete_option( 'woocommerce_admin_install_timestamp' );
+	}
 }

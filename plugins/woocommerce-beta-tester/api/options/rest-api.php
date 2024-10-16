@@ -61,6 +61,7 @@ function wca_test_helper_delete_option( $request ) {
 		)
 	);
 
+	wp_cache_flush();
 	return new WP_REST_RESPONSE( null, 204 );
 }
 
@@ -80,6 +81,7 @@ function wca_test_helper_get_options( $request ) {
 
 	if ( $search ) {
 		$search = $wpdb->esc_like( $search );
+		$search = "%{$search}%";
 		$query .= ' WHERE option_name LIKE %s';
 	}
 

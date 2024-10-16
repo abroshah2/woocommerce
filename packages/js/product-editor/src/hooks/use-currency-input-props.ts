@@ -8,7 +8,7 @@ import { useContext } from '@wordpress/element';
  * Internal dependencies
  */
 import { useProductHelper } from './use-product-helper';
-import { formatCurrencyDisplayValue } from '../utils';
+import { deferSelectInFocus, formatCurrencyDisplayValue } from '../utils';
 
 export type CurrencyInputProps = {
 	prefix: string;
@@ -26,6 +26,8 @@ type Props = {
 	onFocus?: ( event: React.FocusEvent< HTMLInputElement > ) => void;
 	onKeyUp?: ( event: React.KeyboardEvent< HTMLInputElement > ) => void;
 };
+
+const CURRENCY_INPUT_MAX = 1_000_000_000_000_000_000.0;
 
 export const useCurrencyInputProps = ( {
 	value,
@@ -51,18 +53,7 @@ export const useCurrencyInputProps = ( {
 			return sanitizePrice( String( val ) );
 		},
 		onFocus( event: React.FocusEvent< HTMLInputElement > ) {
-			// In some browsers like safari .select() function inside
-			// the onFocus event doesn't work as expected because it
-			// conflicts with onClick the first time user click the
-			// input. Using setTimeout defers the text selection and
-			// avoid the unexpected behaviour.
-			setTimeout(
-				function deferSelection( element: HTMLInputElement ) {
-					element.select();
-				},
-				0,
-				event.currentTarget
-			);
+			deferSelectInFocus( event.currentTarget );
 			if ( onFocus ) {
 				onFocus( event );
 			}
@@ -83,7 +74,11 @@ export const useCurrencyInputProps = ( {
 		onChange( newValue: string ) {
 			const sanitizeValue = sanitizePrice( newValue );
 			if ( onChange ) {
-				onChange( sanitizeValue );
+				onChange(
+					Number( sanitizeValue ) <= CURRENCY_INPUT_MAX
+						? sanitizeValue
+						: String( CURRENCY_INPUT_MAX )
+				);
 			}
 		},
 	};

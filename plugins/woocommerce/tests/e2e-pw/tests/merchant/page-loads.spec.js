@@ -1,5 +1,4 @@
 const { test, expect } = require( '@playwright/test' );
-const { features } = require( '../../utils' );
 const wcApi = require( '@woocommerce/woocommerce-rest-api' ).default;
 
 // a representation of the menu structure for WC
@@ -7,43 +6,118 @@ const wcPages = [
 	{
 		name: 'WooCommerce',
 		subpages: [
-			{ name: 'Home', heading: 'Home' },
-			{ name: 'Orders', heading: 'Orders' },
-			{ name: 'Customers', heading: 'Customers' },
-			{ name: 'Coupons', heading: 'Coupons' },
-			{ name: 'Reports', heading: 'Orders' },
-			{ name: 'Settings', heading: 'General' },
-			{ name: 'Status', heading: 'System status' },
+			{
+				name: 'Home',
+				heading: 'Home',
+				element:
+					'.woocommerce-inbox-card__header > .components-truncate',
+				text: 'Inbox',
+			},
+			{
+				name: 'Orders',
+				heading: 'Orders',
+				element: '.select2-selection__placeholder',
+				text: 'Filter by registered customer',
+			},
+			{
+				name: 'Customers',
+				heading: 'Customers',
+				element: '.woocommerce-dropdown-button__labels',
+				text: 'All Customers',
+			},
+			{
+				name: 'Reports',
+				heading: 'Reports',
+				element: '.nav-tab-wrapper > .nav-tab-active',
+				text: 'Orders',
+			},
+			{
+				name: 'Settings',
+				heading: 'Settings',
+				element: '#store_address-description',
+				text: 'This is where your business is located. Tax rates and shipping rates will use this address.',
+			},
+			{
+				name: 'Status',
+				heading: 'Status',
+				element: '.nav-tab-active',
+				text: 'System status',
+			},
 		],
 	},
 	{
 		name: 'Products',
 		subpages: [
-			{ name: 'All Products', heading: 'Products' },
-			{ name: 'Add New', heading: 'Add New' },
-			{ name: 'Categories', heading: 'Product categories' },
-			{ name: 'Tags', heading: 'Product tags' },
-			{ name: 'Attributes', heading: 'Attributes' },
+			{
+				name: 'All Products',
+				heading: 'Products',
+				element: '#dropdown_product_type',
+				text: 'Filter by product type',
+			},
+			{
+				name: 'Add New',
+				heading: 'Add New',
+				element: '.duplication',
+				text: 'Copy to a new draft',
+			},
+			{
+				name: 'Categories',
+				heading: 'Product categories',
+				element: '#submit',
+				text: 'Add new category',
+			},
+			{
+				name: 'Tags',
+				heading: 'Product tags',
+				element: '#submit',
+				text: 'Add new tag',
+			},
+			{
+				name: 'Attributes',
+				heading: 'Attributes',
+				element: '#submit',
+				text: 'Add attribute',
+			},
 		],
 	},
 	// analytics is handled through a separate test
 	{
 		name: 'Marketing',
 		subpages: [
-			{ name: 'Overview', heading: 'Overview' },
-			{ name: 'Coupons', heading: 'Coupons' },
+			{
+				name: 'Overview',
+				heading: 'Overview',
+				element: '.woocommerce-marketing-channels-card',
+				text: 'Channels',
+			},
+			{
+				name: 'Coupons',
+				heading: 'Coupons',
+				element: '.woocommerce-BlankState-cta.button-primary',
+				text: 'Create your first coupon',
+			},
 		],
 	},
 ];
 
+let productId, orderId;
+const productName = 'Simple Product Name';
+const productPrice = '15.99';
+
 for ( const currentPage of wcPages ) {
-	test.describe( `WooCommerce Page Load > Load ${ currentPage.name } sub pages`, () => {
-		test.use( { storageState: process.env.ADMINSTATE } );
+	const randomNum = new Date().getTime().toString();
+	const customer = {
+		username: `customer${ randomNum }`,
+		password: 'password',
+		email: `customer${ randomNum }@woocommercecoree2etestsuite.com`,
+	};
+	test.describe(
+		`WooCommerce Page Load > Load ${ currentPage.name } sub pages`,
+		{ tag: [ '@gutenberg', '@services' ] },
+		() => {
+			test.use( { storageState: process.env.ADMINSTATE } );
 
-		test.beforeAll( async ( { baseURL } ) => {
-			const coreProfilerEnabled = features.is_enabled( 'core-profiler' );
-
-			if ( coreProfilerEnabled ) {
+			test.beforeAll( async ( { baseURL } ) => {
 				const response = await new wcApi( {
 					url: baseURL,
 					consumerKey: process.env.CONSUMER_KEY,
@@ -56,55 +130,103 @@ for ( const currentPage of wcPages ) {
 				const httpStatus = response.status;
 				const { status, message } = response.data;
 
-				expect( httpStatus ).toEqual( 200 );
-				expect( status ).toEqual( 'success' );
-				expect( message ).toEqual(
+				test.expect( httpStatus ).toEqual( 200 );
+				test.expect( status ).toEqual( 'success' );
+				test.expect( message ).toEqual(
 					'Onboarding profile data has been updated.'
 				);
-			}
-		} );
+				const api = new wcApi( {
+					url: baseURL,
+					consumerKey: process.env.CONSUMER_KEY,
+					consumerSecret: process.env.CONSUMER_SECRET,
+					version: 'wc/v3',
+				} );
+				// create a simple product
+				await api
+					.post( 'products', {
+						name: productName,
+						type: 'simple',
+						regular_price: productPrice,
+					} )
+					.then( ( _response ) => {
+						productId = _response.data.id;
+					} );
+				// create an order
+				await api
+					.post( 'orders', {
+						line_items: [
+							{
+								product_id: productId,
+								quantity: 1,
+							},
+						],
+					} )
+					.then( ( _response ) => {
+						orderId = _response.data.id;
+					} );
+				// create customer
+				await api
+					.post( 'customers', customer )
+					.then(
+						( _response ) => ( customer.id = _response.data.id )
+					);
+			} );
 
-		test.beforeEach( async ( { page } ) => {
-			if ( currentPage.name === 'WooCommerce' ) {
-				await page.goto( 'wp-admin/admin.php?page=wc-admin' );
-			} else if ( currentPage.name === 'Products' ) {
-				await page.goto( 'wp-admin/edit.php?post_type=product' );
-			} else if ( currentPage.name === 'Marketing' ) {
-				await page.goto(
-					'wp-admin/admin.php?page=wc-admin&path=%2Fmarketing'
-				);
-			}
-		} );
+			test.afterAll( async ( { baseURL } ) => {
+				const api = new wcApi( {
+					url: baseURL,
+					consumerKey: process.env.CONSUMER_KEY,
+					consumerSecret: process.env.CONSUMER_SECRET,
+					version: 'wc/v3',
+				} );
+				await api.delete( `products/${ productId }`, {
+					force: true,
+				} );
+				await api.delete( `orders/${ orderId }`, { force: true } );
+				await api.delete( `customers/${ customer.id }`, {
+					force: true,
+				} );
+			} );
 
-		for ( let i = 0; i < currentPage.subpages.length; i++ ) {
-			test( `Can load ${ currentPage.subpages[ i ].name }`, async ( {
-				page,
-			} ) => {
-				// deal with cases where the 'Coupons' legacy menu had already been removed.
-				if ( currentPage.subpages[ i ].name === 'Coupons' ) {
-					const couponsMenuVisible = await page
-						.locator(
-							`li.wp-menu-open > ul.wp-submenu > li:has-text("${ currentPage.subpages[ i ].name }")`
-						)
-						.isVisible();
-
-					test.skip(
-						! couponsMenuVisible,
-						'Skipping this test because the legacy Coupons menu was not found and may have already been removed.'
+			test.beforeEach( async ( { page } ) => {
+				if ( currentPage.name === 'WooCommerce' ) {
+					await page.goto( 'wp-admin/admin.php?page=wc-admin' );
+				} else if ( currentPage.name === 'Products' ) {
+					await page.goto( 'wp-admin/edit.php?post_type=product' );
+				} else if ( currentPage.name === 'Marketing' ) {
+					await page.goto(
+						'wp-admin/admin.php?page=wc-admin&path=%2Fmarketing'
 					);
 				}
-
-				await page
-					.locator(
-						`li.wp-menu-open > ul.wp-submenu > li:has-text("${ currentPage.subpages[ i ].name }")`,
-						{ waitForLoadState: 'networkidle' }
-					)
-					.click();
-
-				await expect(
-					page.locator( 'h1.components-text' )
-				).toContainText( currentPage.subpages[ i ].heading );
 			} );
+
+			for ( let i = 0; i < currentPage.subpages.length; i++ ) {
+				test(
+					`Can load ${ currentPage.subpages[ i ].name }`,
+					{ tag: '@skip-on-default-wpcom' },
+					async ( { page } ) => {
+						await page
+							.locator(
+								`li.wp-menu-open > ul.wp-submenu > li a:text-is("${ currentPage.subpages[ i ].name }")`
+							)
+							.click();
+
+						await expect(
+							page.locator( 'h1.components-text' )
+						).toContainText( currentPage.subpages[ i ].heading );
+
+						await expect(
+							page
+								.locator( currentPage.subpages[ i ].element )
+								.first()
+						).toBeVisible();
+
+						await expect(
+							page.locator( currentPage.subpages[ i ].element )
+						).toContainText( currentPage.subpages[ i ].text );
+					}
+				);
+			}
 		}
-	} );
+	);
 }
